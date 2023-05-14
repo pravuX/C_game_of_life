@@ -108,10 +108,10 @@ void next_generation() {
 int main() {
   initialize_board();
   while (1) {
-    printf("\e[1;1H\e[2J"); // clear the screen
     render_board();
     next_generation();
     msleep(250); // sleep for 250 milliseconds
+    printf("\033[15A\033[15D"); // clear the screen
   }
   return 0;
 }
