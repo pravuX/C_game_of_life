@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
-#define HEIGHT 15 // no of rows
-#define WIDTH  15 // no of cols
+#define HEIGHT 21 // no of rows
+#define WIDTH  21 // no of cols
 
 int mod(int a, int b) {
   // calculates a mod b
@@ -40,6 +40,20 @@ void initialize_glider() {
           row == 1 && col == 2 ||
           row == 2 && col == 0 ||
           row == 2 && col == 1) {
+        current_board.grid[row][col] = alive;
+      } else current_board.grid[row][col] = dead;
+    }
+}
+
+// initialize the board as a pulsar
+void initialize_pulsar() {
+  int row, col;
+  for (row = 0; row < HEIGHT; row++)
+    for (col = 0; col < WIDTH; col++) {
+      if (row == 10 && (col ==  5 || col ==  6 ||
+                        col ==  7 || col ==  8 || col ==  9 ||
+                        col == 11 || col == 12 || col == 13 ||
+                        col == 14 || col == 15)) {
         current_board.grid[row][col] = alive;
       } else current_board.grid[row][col] = dead;
     }
@@ -105,7 +119,7 @@ void next_generation() {
 }
 
 int main() {
-  initialize_glider();
+  initialize_pulsar();
   while (1) {
     render_board();
     next_generation();
