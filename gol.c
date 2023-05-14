@@ -4,25 +4,25 @@
 #define WIDTH  21 // no of cols
 
 int mod(int a, int b) {
-  // calculates a mod b
+  // Calculates a mod b.
   // a >= 0, a mod b = a % b
   // a < 0, a mod b = b + a % b
   int res = a % b;
   return res < 0 ? res + b : res;
 }
 
-// sleep for give no. of milliseconds
+// Sleep for given no. of milliseconds.
 void msleep(int ms) {
   usleep(ms * 1000);
 }
 
-// each cell can either be dead(0) or alive(1)
+// Each cell can either be dead(0) or alive(1).
 typedef enum {
   dead,
   alive
 } cell;
 
-// an array of cells forms a board
+// An array of cells forms a board.
 typedef struct {
   cell grid[HEIGHT][WIDTH];
 } board;
@@ -30,7 +30,7 @@ typedef struct {
 board current_board;
 board next_board;
 
-// initialize the board as a glider
+// Initialize the board as a glider.
 void initialize_glider() {
   int row, col;
   for (row = 0; row < HEIGHT; row++)
@@ -45,7 +45,7 @@ void initialize_glider() {
     }
 }
 
-// initialize the board as a pulsar
+// Initialize the board as a pulsar.
 void initialize_pulsar() {
   int row, col;
   for (row = 0; row < HEIGHT; row++)
@@ -59,7 +59,7 @@ void initialize_pulsar() {
     }
 }
 
-// display the board
+// Display the board.
 void render_board() {
   int row, col;
   for (row = 0; row < HEIGHT; row++) {
@@ -76,38 +76,38 @@ void render_board() {
   }
 }
 
-// for a cell at (row, col) the subgrid from
+// For a cell at (row, col) the subgrid from
 // row-1 to row+1 and col-1 to col+1 represents
-// it's neighborhood. add alive neighbors to the
+// it's neighborhood. Add alive neighbors to the
 // neighbor count.
 int no_of_neighbors(int row, int col) {
   int row_offset, col_offset, n;
-  n = 0; // initialize no of neighbors
+  n = 0; // Initialize the neighbor count.
   for (row_offset = -1; row_offset <= 1; row_offset++)
     for (col_offset = -1; col_offset <=1; col_offset++) {
       n += current_board.grid[mod((row + row_offset), HEIGHT)][mod((col + col_offset), WIDTH)];
     }
-  // subtract the cell itsel from the neighbor count
+  // Subtract the cell itself from the neighbor count.
   return n - current_board.grid[row][col];
 }
 
-// calculate the next generation
+// Calculate the next generation.
 void next_generation() {
   int row, col, n;
-  // copy the current board
-  next_board = current_board;
+  next_board = current_board; // Copy the current board.
+  
   for (row = 0; row < HEIGHT; row++) {
     for (col = 0; col < WIDTH; col++) {
       n = no_of_neighbors(row, col);
       switch (current_board.grid[row][col]) {
         case alive:
-          // if a live cell has less than 2 or greater than 3 neighbors
+          // If a live cell has less than 2 or greater than 3 neighbors
           // it dies, else it remains alive in the next generation.
           if (n < 2 || n > 3)
             next_board.grid[row][col] = dead;
           break;
         case dead:
-          // if a dead cell has exactly 3 neighbors it becomes alive in the
+          // If a dead cell has exactly 3 neighbors it becomes alive in the
           // generation, else it remains dead.
           if (n == 3)
             next_board.grid[row][col] = alive;
@@ -123,8 +123,8 @@ int main() {
   while (1) {
     render_board();
     next_generation();
-    msleep(250); // sleep for 250 milliseconds
-    printf("\033[%dA\033[%dD", HEIGHT, WIDTH); // clear the screen
+    msleep(250); // Sleep for 250 milliseconds.
+    printf("\033[%dA\033[%dD", HEIGHT, WIDTH); // Clear the screen.
   }
   return 0;
 }
