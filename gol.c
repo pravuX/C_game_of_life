@@ -31,26 +31,26 @@ board current_board;
 board next_board;
 
 // initialize the board as a glider
-void initialize_board() {
-  int i, j;
-  for (i = 0; i < HEIGHT; i++)
-    for (j = 0; j < WIDTH; j++) {
-      if (i == 0 && j == 0 ||
-          i == 1 && j == 1 ||
-          i == 1 && j == 2 ||
-          i == 2 && j == 0 ||
-          i == 2 && j == 1) {
-        current_board.grid[i][j] = alive;
-      } else current_board.grid[i][j] = dead;
+void initialize_glider() {
+  int row, col;
+  for (row = 0; row < HEIGHT; row++)
+    for (col = 0; col < WIDTH; col++) {
+      if (row == 0 && col == 0 ||
+          row == 1 && col == 1 ||
+          row == 1 && col == 2 ||
+          row == 2 && col == 0 ||
+          row == 2 && col == 1) {
+        current_board.grid[row][col] = alive;
+      } else current_board.grid[row][col] = dead;
     }
 }
 
 // display the board
 void render_board() {
-  int i, j;
-  for (i = 0; i < HEIGHT; i++) {
-    for (j = 0; j < WIDTH; j++)
-      switch (current_board.grid[i][j]) {
+  int row, col;
+  for (row = 0; row < HEIGHT; row++) {
+    for (col = 0; col < WIDTH; col++)
+      switch (current_board.grid[row][col]) {
         case dead:
           printf("░░");
           break;
@@ -67,12 +67,11 @@ void render_board() {
 // it's neighborhood. add alive neighbors to the
 // neighbor count.
 int no_of_neighbors(int row, int col) {
-  // row offset, column offset and number of neighbors
-  int or, oc, n;
-  n = 0;
-  for (or = -1; or <= 1; or++)
-    for (oc = -1; oc <=1; oc++) {
-      n += current_board.grid[mod((row + or), HEIGHT)][mod((col + oc), WIDTH)];
+  int row_offset, col_offset, n;
+  n = 0; // initialize no of neighbors
+  for (row_offset = -1; row_offset <= 1; row_offset++)
+    for (col_offset = -1; col_offset <=1; col_offset++) {
+      n += current_board.grid[mod((row + row_offset), HEIGHT)][mod((col + col_offset), WIDTH)];
     }
   // subtract the cell itsel from the neighbor count
   return n - current_board.grid[row][col];
@@ -80,24 +79,24 @@ int no_of_neighbors(int row, int col) {
 
 // calculate the next generation
 void next_generation() {
-  int i, j, n;
+  int row, col, n;
   // copy the current board
   next_board = current_board;
-  for (i = 0; i < HEIGHT; i++) {
-    for (j = 0; j < WIDTH; j++) {
-      n = no_of_neighbors(i, j);
-      switch (current_board.grid[i][j]) {
+  for (row = 0; row < HEIGHT; row++) {
+    for (col = 0; col < WIDTH; col++) {
+      n = no_of_neighbors(row, col);
+      switch (current_board.grid[row][col]) {
         case alive:
           // if a live cell has less than 2 or greater than 3 neighbors
           // it dies, else it remains alive in the next generation.
           if (n < 2 || n > 3)
-            next_board.grid[i][j] = dead;
+            next_board.grid[row][col] = dead;
           break;
         case dead:
           // if a dead cell has exactly 3 neighbors it becomes alive in the
           // generation, else it remains dead.
           if (n == 3)
-            next_board.grid[i][j] = alive;
+            next_board.grid[row][col] = alive;
           break;
       }
     }
@@ -106,7 +105,7 @@ void next_generation() {
 }
 
 int main() {
-  initialize_board();
+  initialize_glider();
   while (1) {
     render_board();
     next_generation();
