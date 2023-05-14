@@ -111,7 +111,7 @@ int main() {
     render_board();
     next_generation();
     msleep(250); // sleep for 250 milliseconds
-    printf("\033[15A\033[15D"); // clear the screen
+    printf("\033[%dA\033[%dD", HEIGHT, WIDTH); // clear the screen
   }
   return 0;
 }
