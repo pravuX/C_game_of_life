@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #define HEIGHT 21 // no of rows
-#define WIDTH  21 // no of cols
+#define WIDTH 21  // no of cols
 
 int mod(int a, int b) {
   // Calculates a mod b.
@@ -12,15 +12,10 @@ int mod(int a, int b) {
 }
 
 // Sleep for given no. of milliseconds.
-void msleep(int ms) {
-  usleep(ms * 1000);
-}
+void msleep(int ms) { usleep(ms * 1000); }
 
 // Each cell can either be dead(0) or alive(1).
-typedef enum {
-  dead,
-  alive
-} cell;
+typedef enum { dead, alive } cell;
 
 // An array of cells forms a board.
 typedef struct {
@@ -35,13 +30,12 @@ void initialize_glider() {
   int row, col;
   for (row = 0; row < HEIGHT; row++)
     for (col = 0; col < WIDTH; col++) {
-      if (row == 0 && col == 0 ||
-          row == 1 && col == 1 ||
-          row == 1 && col == 2 ||
-          row == 2 && col == 0 ||
+      if (row == 0 && col == 0 || row == 1 && col == 1 ||
+          row == 1 && col == 2 || row == 2 && col == 0 ||
           row == 2 && col == 1) {
         current_board.grid[row][col] = alive;
-      } else current_board.grid[row][col] = dead;
+      } else
+        current_board.grid[row][col] = dead;
     }
 }
 
@@ -50,12 +44,12 @@ void initialize_pulsar() {
   int row, col;
   for (row = 0; row < HEIGHT; row++)
     for (col = 0; col < WIDTH; col++) {
-      if (row == 10 && (col ==  5 || col ==  6 ||
-                        col ==  7 || col ==  8 || col ==  9 ||
-                        col == 11 || col == 12 || col == 13 ||
-                        col == 14 || col == 15)) {
+      if (row == 10 &&
+          (col == 5 || col == 6 || col == 7 || col == 8 || col == 9 ||
+           col == 11 || col == 12 || col == 13 || col == 14 || col == 15)) {
         current_board.grid[row][col] = alive;
-      } else current_board.grid[row][col] = dead;
+      } else
+        current_board.grid[row][col] = dead;
     }
 }
 
@@ -63,11 +57,12 @@ void initialize_acorn() {
   int row, col;
   for (row = 0; row < HEIGHT; row++)
     for (col = 0; col < WIDTH; col++) {
-      if (row ==  9 && (col == 7 || col == 8 || col == 11 || col == 12 || col == 13) ||
-          row == 10 && col == 10 ||
-          row == 11 && col ==  8) {
+      if (row == 9 &&
+              (col == 7 || col == 8 || col == 11 || col == 12 || col == 13) ||
+          row == 10 && col == 10 || row == 11 && col == 8) {
         current_board.grid[row][col] = alive;
-      } else current_board.grid[row][col] = dead;
+      } else
+        current_board.grid[row][col] = dead;
     }
 }
 
@@ -77,12 +72,12 @@ void render_board() {
   for (row = 0; row < HEIGHT; row++) {
     for (col = 0; col < WIDTH; col++)
       switch (current_board.grid[row][col]) {
-        case dead:
-          printf("░░");
-          break;
-        case alive:
-          printf("██");
-          break;
+      case dead:
+        printf("░░");
+        break;
+      case alive:
+        printf("██");
+        break;
       }
     putchar('\n');
   }
@@ -96,7 +91,7 @@ int no_of_neighbors(int row, int col) {
   int row_offset, col_offset, n, row_pos, col_pos;
   n = 0; // Initialize the neighbor count.
   for (row_offset = -1; row_offset <= 1; row_offset++)
-    for (col_offset = -1; col_offset <=1; col_offset++) {
+    for (col_offset = -1; col_offset <= 1; col_offset++) {
       // for grid that wraps around
       row_pos = mod((row + row_offset), HEIGHT);
       col_pos = mod((col + col_offset), WIDTH);
@@ -109,7 +104,7 @@ int no_of_neighbors(int row, int col) {
       if (row_pos >= 0 && row_pos < HEIGHT &&
           col_pos >= 0 && col_pos < WIDTH)
         n += current_board.grid[row_pos][col_pos]; */
-  }
+    }
   // Subtract the cell itself from the neighbor count.
   return n - current_board.grid[row][col];
 }
@@ -123,18 +118,18 @@ void next_generation() {
     for (col = 0; col < WIDTH; col++) {
       n = no_of_neighbors(row, col);
       switch (current_board.grid[row][col]) {
-        case alive:
-          // If a live cell has less than 2 or greater than 3 neighbors
-          // it dies, else it remains alive in the next generation.
-          if (n < 2 || n > 3)
-            next_board.grid[row][col] = dead;
-          break;
-        case dead:
-          // If a dead cell has exactly 3 neighbors it becomes alive in the
-          // next generation, else it remains dead.
-          if (n == 3)
-            next_board.grid[row][col] = alive;
-          break;
+      case alive:
+        // If a live cell has less than 2 or greater than 3 neighbors
+        // it dies, else it remains alive in the next generation.
+        if (n < 2 || n > 3)
+          next_board.grid[row][col] = dead;
+        break;
+      case dead:
+        // If a dead cell has exactly 3 neighbors it becomes alive in the
+        // next generation, else it remains dead.
+        if (n == 3)
+          next_board.grid[row][col] = alive;
+        break;
       }
     }
   }
@@ -146,7 +141,7 @@ int main() {
   while (1) {
     render_board();
     next_generation();
-    msleep(250); // Sleep for 250 milliseconds.
+    msleep(250);                               // Sleep for 250 milliseconds.
     printf("\033[%dA\033[%dD", HEIGHT, WIDTH); // Clear the screen.
   }
   return 0;
